@@ -20,9 +20,10 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg); color: var(--text); padding: 15px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .container { width: 100%; max-width: 440px; background: var(--card); padding: 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); border: 1px solid #334155; position: relative; }
+        
+        .search-container { margin-bottom: 15px; display: flex; gap: 8px; }
         .badge-esc { text-align: center; font-size: 0.75rem; color: var(--primary); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
         
-        /* Contenedor de Foto */
         .photo-container { width: 90px; height: 90px; margin: 0 auto 10px auto; border-radius: 50%; overflow: hidden; border: 2px solid var(--accent); background: #0f172a; display: flex; justify-content: center; align-items: center; }
         .photo-container img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -46,7 +47,6 @@
         .info-row span { color: var(--text); font-weight: 500; }
         .alergia-box { background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); padding: 8px; border-radius: 6px; color: #f87171; margin-top: 5px; }
 
-        /* Modal Configurar */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; padding: 20px; z-index: 100; overflow-y: auto; }
         .modal-content { background: var(--card); width: 100%; max-width: 420px; padding: 20px; border-radius: 14px; border: 1px solid #334155; position: relative; max-height: 90vh; overflow-y: auto; }
         .modal-content h3 { color: var(--accent); margin-bottom: 10px; }
@@ -59,39 +59,45 @@
 <div class="container">
     <button class="config-trigger" onclick="abrirConfig()" title="Configurar">⚙️</button>
     
-    <div id="vistaPublica">
+    <!-- Barra de búsqueda por ID -->
+    <div class="search-container" id="searchBox">
+        <input type="text" id="inputIdBusqueda" placeholder="Ingresa ID del niño (ej. 001)">
+        <button onclick="buscarPorId()">Buscar</button>
+    </div>
+
+    <div id="perfilContent" class="hidden">
         <div class="photo-container">
             <img id="fotoPerfil" src="https://via.placeholder.com/150" alt="Foto">
         </div>
         <div class="badge-esc" id="escuelaLbl">IDENTIFICACION ESC. SEC. #47</div>
-        <h1 id="nombreLbl">López Olais</h1>
+        <h1 id="nombreLbl">Nombre</h1>
         <p class="subtitle" id="subLbl">Es Sec. Juan Rulfo<br>En caso de emergencia, llamar a mis padres</p>
 
-        <!-- Botones de Acción -->
         <div class="profile-section">
-            <a id="btnMama" href="#" class="btn-action btn-mama">Llamar a Mamá: <span id="telMamaLbl">7775998980</span></a>
+            <a id="btnMama" href="#" class="btn-action btn-mama">Llamar a Mamá: <span id="telMamaLbl"></span></a>
             <a id="btnPapa" href="#" class="btn-action btn-papa">📱 Llamar a Papá</a>
             <a id="btnWsp" href="#" class="btn-action btn-wsp" target="_blank">📍 Enviar Ubicación por WhatsApp</a>
             <a id="btnAcad" href="#" class="btn-action btn-acad" target="_blank">📋 Enviar reporte académico</a>
         </div>
 
         <div class="info-card">
-            <div class="info-row">Edad: <span id="edadLbl">16</span></div>
-            <div class="info-row">Tipo de Sangre: <span id="sangreLbl">O+</span></div>
+            <div class="info-row">ID: <span id="idLbl"></span> | PIN Asignado: <span id="pinLbl"></span></div>
+            <div class="info-row">Edad: <span id="edadLbl"></span></div>
+            <div class="info-row">Tipo de Sangre: <span id="sangreLbl"></span></div>
             <div class="info-row">Alergias o Condiciones:</div>
             <div class="alergia-box" id="alergiaLbl">Ninguna registrada</div>
             <div class="info-row" style="margin-top: 10px;">NSS / Seguro: <span id="nssLbl">No registrado</span></div>
         </div>
+        <button onclick="resetBusqueda()" style="background: #334155; width: 100%; margin-top: 15px;">🔍 Buscar otro ID</button>
     </div>
 </div>
 
-<!-- Modal Configuración con PIN -->
 <div id="modalConfig" class="modal hidden">
     <div class="modal-content">
         <button class="close-btn" onclick="cerrarConfig()">✕</button>
         <h3>⚙️ Configurar Perfil</h3>
         <div id="divPin">
-            <p class="subtitle" style="text-align: left; margin-bottom: 10px;">Ingresa el PIN de tutor:</p>
+            <p class="subtitle" style="text-align: left; margin-bottom: 10px;">Ingresa el PIN correspondiente al ID (ej. 1001 para ID 001):</p>
             <input type="password" id="pinInput" placeholder="PIN de seguridad">
             <button onclick="verificarPin()">Acceder</button>
         </div>
@@ -140,41 +146,73 @@
 <script>
     const BIN_ID = "6af90c83ac6210605a887415";
     const MASTER_KEY = "$2a$10$RA2b3dfFoTrdqkpHH7uVkedzDc3OSmOTSLuvKFx7n4hRCONPqti9S";
-    const PIN_SECRETO = "1234";
 
-    let datosActuales = {};
+    let listaNinos = [];
+    let ninoActual = null;
 
-    async function cargarDatos() {
+    async function cargarBaseDatos() {
         try {
             const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
                 headers: { "X-Master-Key": MASTER_KEY }
             });
             const data = await res.json();
-            datosActuales = data.record;
-
-            document.getElementById("nombreLbl").innerText = datosActuales.nombre || "López Olais";
-            document.getElementById("telMamaLbl").innerText = datosActuales.telefonoMama || "7775998980";
-            document.getElementById("edadLbl").innerText = datosActuales.edad || "16";
-            document.getElementById("sangreLbl").innerText = datosActuales.sangre || "O+";
-            document.getElementById("alergiaLbl").innerText = datosActuales.alergias || "Ninguna registrada";
-            document.getElementById("nssLbl").innerText = datosActuales.nss || "No registrado";
-            
-            if(datosActuales.foto) {
-                document.getElementById("fotoPerfil").src = datosActuales.foto;
-            }
-
-            // Enlaces de botones
-            document.getElementById("btnMama").href = `tel:${datosActuales.telefonoMama || '7775998980'}`;
-            document.getElementById("btnPapa").href = `tel:${datosActuales.telefonoPapa || ''}`;
-            document.getElementById("btnWsp").href = `https://wa.me/${datosActuales.telefonoMama || '7775998980'}?text=¡Emergencia! Encontré al alumno ${datosActuales.nombre || 'López Olais'}`;
-            document.getElementById("btnAcad").href = `https://wa.me/${datosActuales.telefonoMama || '7775998980'}?text=Envío reporte académico del alumno ${datosActuales.nombre || 'López Olais'}`;
-
+            // Soporta si es un array directo o un objeto con children
+            listaNinos = Array.isArray(data.record) ? data.record : (data.record.children || [data.record]);
         } catch (e) {
-            console.error("Error al cargar", e);
+            console.error("Error al conectar", e);
         }
     }
 
+    async function buscarPorId() {
+        const idBuscado = document.getElementById("inputIdBusqueda").value.trim();
+        if(!idBuscado) return;
+
+        if(listaNinos.length === 0) await cargarBaseDatos();
+
+        ninoActual = listaNinos.find(n => String(n.id) === idBuscado);
+
+        if(ninoActual) {
+            mostrarPerfil(ninoActual);
+        } else {
+            alert("No se encontró ningún niño con ese ID.");
+        }
+    }
+
+    function mostrarPerfil(nino) {
+        document.getElementById("searchBox").classList.add("hidden");
+        document.getElementById("perfilContent").classList.remove("hidden");
+
+        document.getElementById("nombreLbl").innerText = nino.nombre || "Sin nombre";
+        document.getElementById("idLbl").innerText = nino.id || "";
+        document.getElementById("pinLbl").innerText = nino.pin || "";
+        document.getElementById("telMamaLbl").innerText = nino.telefonoMama || "";
+        document.getElementById("edadLbl").innerText = nino.edad || "";
+        document.getElementById("sangreLbl").innerText = nino.sangre || "";
+        document.getElementById("alergiaLbl").innerText = nino.alergias || "Ninguna registrada";
+        document.getElementById("nssLbl").innerText = nino.nss || "No registrado";
+        
+        if(nino.foto) {
+            document.getElementById("fotoPerfil").src = nino.foto;
+        }
+
+        document.getElementById("btnMama").href = `tel:${nino.telefonoMama || ''}`;
+        document.getElementById("btnPapa").href = `tel:${nino.telefonoPapa || ''}`;
+        document.getElementById("btnWsp").href = `https://wa.me/${nino.telefonoMama || ''}?text=¡Emergencia! Encontré al alumno ${nino.nombre}`;
+        document.getElementById("btnAcad").href = `https://wa.me/${nino.telefonoMama || ''}?text=Envío reporte académico del alumno ${nino.nombre}`;
+    }
+
+    function resetBusqueda() {
+        ninoActual = null;
+        document.getElementById("perfilContent").classList.add("hidden");
+        document.getElementById("searchBox").classList.remove("hidden");
+        document.getElementById("inputIdBusqueda").value = "";
+    }
+
     function abrirConfig() {
+        if(!ninoActual) {
+            alert("Primero busca o selecciona un ID de niño para configurar.");
+            return;
+        }
         document.getElementById("modalConfig").classList.remove("hidden");
     }
 
@@ -186,36 +224,34 @@
     }
 
     function verificarPin() {
-        const pin = document.getElementById("pinInput").value;
-        if (pin === PIN_SECRETO) {
+        const pinIngresado = document.getElementById("pinInput").value.trim();
+        // Compara si el PIN ingresado coincide con el PIN asignado a este niño (ej. 1001 para el ID 001)
+        if (ninoActual && String(ninoActual.pin) === pinIngresado) {
             document.getElementById("divPin").classList.add("hidden");
             document.getElementById("divForm").classList.remove("hidden");
 
-            // Rellenar inputs
-            document.getElementById("editNombre").value = datosActuales.nombre || "";
-            document.getElementById("editMama").value = datosActuales.telefonoMama || "";
-            document.getElementById("editPapa").value = datosActuales.telefonoPapa || "";
-            document.getElementById("editEdad").value = datosActuales.edad || "";
-            document.getElementById("editSangre").value = datosActuales.sangre || "";
-            document.getElementById("editNss").value = datosActuales.nss || "";
-            document.getElementById("editAlergias").value = datosActuales.alergias || "";
-            document.getElementById("editFoto").value = datosActuales.foto || "";
+            document.getElementById("editNombre").value = ninoActual.nombre || "";
+            document.getElementById("editMama").value = ninoActual.telefonoMama || "";
+            document.getElementById("editPapa").value = ninoActual.telefonoPapa || "";
+            document.getElementById("editEdad").value = ninoActual.edad || "";
+            document.getElementById("editSangre").value = ninoActual.sangre || "";
+            document.getElementById("editNss").value = ninoActual.nss || "";
+            document.getElementById("editAlergias").value = ninoActual.alergias || "";
+            document.getElementById("editFoto").value = ninoActual.foto || "";
         } else {
-            alert("PIN incorrecto");
+            alert("PIN incorrecto para este ID.");
         }
     }
 
     async function guardarCambios() {
-        const nuevosDatos = {
-            nombre: document.getElementById("editNombre").value,
-            telefonoMama: document.getElementById("editMama").value,
-            telefonoPapa: document.getElementById("editPapa").value,
-            edad: document.getElementById("editEdad").value,
-            sangre: document.getElementById("editSangre").value,
-            nss: document.getElementById("editNss").value,
-            alergias: document.getElementById("editAlergias").value,
-            foto: document.getElementById("editFoto").value
-        };
+        ninoActual.nombre = document.getElementById("editNombre").value;
+        ninoActual.telefonoMama = document.getElementById("editMama").value;
+        ninoActual.telefonoPapa = document.getElementById("editPapa").value;
+        ninoActual.edad = document.getElementById("editEdad").value;
+        ninoActual.sangre = document.getElementById("editSangre").value;
+        ninoActual.nss = document.getElementById("editNss").value;
+        ninoActual.alergias = document.getElementById("editAlergias").value;
+        ninoActual.foto = document.getElementById("editFoto").value;
 
         try {
             const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
@@ -224,13 +260,13 @@
                     "Content-Type": "application/json",
                     "X-Master-Key": MASTER_KEY
                 },
-                body: JSON.stringify(nuevosDatos)
+                body: JSON.stringify(listaNinos)
             });
 
             if(res.ok) {
                 alert("¡Cambios guardados con éxito!");
                 cerrarConfig();
-                cargarDatos();
+                mostrarPerfil(ninoActual);
             } else {
                 alert("Error al guardar en la base de datos.");
             }
@@ -239,7 +275,7 @@
         }
     }
 
-    cargarDatos();
+    cargarBaseDatos();
 </script>
 
 </body>
