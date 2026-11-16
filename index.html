@@ -174,5 +174,44 @@ button:active, .btn:active { transform: scale(0.96) !important; filter: brightne
     }
     cargarNube();
 </script>
+
+<!-- Privacidad Minimalista -->
+<script>
+window.addEventListener("load", function() {
+    const timer = setInterval(() => {
+        const elements = document.querySelectorAll('*');
+        let edadEl = null;
+        for (let el of elements) {
+            if (el.childNodes.length === 1 && (el.textContent.trim() === "Edad:" || el.textContent.trim().startsWith("Edad:"))) {
+                edadEl = el;
+                break;
+            }
+        }
+        
+        if (edadEl && !document.getElementById("miniPrivacidad")) {
+            const container = document.createElement("div");
+            container.id = "miniPrivacidad";
+            container.style.cssText = "width: 100% !important; clear: both !important; margin: 8px 0 !important; text-align: left !important; box-sizing: border-box !important;";
+            
+            container.innerHTML = `
+                <label style="display: inline-flex !important; align-items: center !important; gap: 6px !important; cursor: pointer !important;">
+                    <input type="checkbox" id="aceptaPrivacidad" onchange="localStorage.setItem('safekid_consentimiento', this.checked)" style="accent-color: #fff !important; transform: scale(0.75) !important; margin: 0 !important;">
+                    <a href="privacidad.html" target="_blank" style="font-size: 0.5rem !important; color: #00ffff !important; text-decoration: underline !important; font-family: sans-serif !important;">Política de privacidad</a>
+                </label>
+            `;
+            
+            const cardInner = edadEl.closest('div') || edadEl.parentNode;
+            cardInner.insertBefore(container, edadEl);
+            
+            if(localStorage.getItem("safekid_consentimiento") === "true") {
+                const chk = document.getElementById("aceptaPrivacidad");
+                if(chk) chk.checked = true;
+            }
+            clearInterval(timer);
+        }
+    }, 200);
+});
+</script>
+
 </body>
 </html>
