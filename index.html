@@ -3,238 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeKid - Identificación de Emergencia</title>
+    <title>SafeKid - Emergencia</title>
     <style>
-        :root {
-            --primary: #ff3b30;
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text: #f8fafc;
-            --muted: #94a3b8;
-            --accent: #38bdf8;
-            --green: #22c55e;
-            --blue: #3b82f6;
-            --orange: #f97316;
-            --purple: #a855f7;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 15px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 440px; background: var(--card); padding: 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); border: 1px solid #334155; position: relative; }
-        
-        .badge-esc { text-align: center; font-size: 0.75rem; color: var(--primary); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        
-        .photo-container { width: 90px; height: 90px; margin: 0 auto 10px auto; border-radius: 50%; overflow: hidden; border: 2px solid var(--accent); background: #0f172a; display: flex; justify-content: center; align-items: center; }
-        .photo-container img { width: 100%; height: 100%; object-fit: cover; }
-
-        h1 { text-align: center; font-size: 1.6rem; margin-bottom: 4px; color: var(--text); }
-        p.subtitle { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 15px; }
-        
-        input, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 0.95rem; margin-bottom: 10px; }
-        input:focus, textarea:focus { outline: none; border-color: var(--accent); }
-        button { padding: 10px 16px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
-        .hidden { display: none !important; }
-        
-        .profile-section { margin-top: 10px; }
-        .btn-action { display: block; width: 100%; text-align: center; padding: 12px; margin-top: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; color: white; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .btn-mama { background: var(--green); }
-        .btn-papa { background: var(--blue); }
-        .btn-wsp { background: var(--orange); }
-        .btn-acad { background: var(--purple); }
-
-        .info-card { background: #0f172a; padding: 14px; border-radius: 10px; margin-top: 15px; border: 1px solid #334155; font-size: 0.9rem; }
-        .info-row { margin-bottom: 8px; color: var(--muted); }
-        .info-row span { color: var(--text); font-weight: 500; }
-        .alergia-box { background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); padding: 8px; border-radius: 6px; color: #f87171; margin-top: 5px; }
-
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; padding: 20px; z-index: 100; overflow-y: auto; }
-        .modal-content { background: var(--card); width: 100%; max-width: 420px; padding: 20px; border-radius: 14px; border: 1px solid #334155; position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-content h3 { color: var(--accent); margin-bottom: 10px; }
-        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; }
-        .config-trigger { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--muted); font-size: 1.1rem; cursor: pointer; }
+        @keyframes borderAnimation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes neonPulse { 0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.4), inset 0 0 5px rgba(59, 130, 246, 0.2); } 50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), inset 0 0 10px rgba(59, 130, 246, 0.4); } 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.4), inset 0 0 5px rgba(59, 130, 246, 0.2); } }
+        @keyframes redNeonMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        body { font-family: Arial, sans-serif; background: radial-gradient(circle at center, #111827 0%, #030712 100%); color: #fff; margin: 0; padding: 15px; display: flex; justify-content: center; min-height: 100vh; box-sizing: border-box; }
+        .container-wrapper { position: relative; width: 100%; max-width: 420px; border-radius: 18px; padding: 2px; background: linear-gradient(270deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6); background-size: 400% 400%; animation: borderAnimation 8s ease infinite; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        .container { width: 100%; background: #121826; border-radius: 16px; padding: 20px; box-sizing: border-box; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo { font-size: 20px; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 10px rgba(59,130,246,0.5); }
+        .btn-parents { background: #1e293b; color: #93c5fd; border: 1px solid #3b82f6; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .card-inner { background: #1a2234; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #2d3748; }
+        .avatar-container { width: 90px; height: 90px; margin: 0 auto 12px auto; border-radius: 50%; overflow: hidden; border: 3px solid #3b82f6; background: #111827; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(59,130,246,0.5); }
+        .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-placeholder { font-size: 32px; }
+        .sub-title-wrapper { display: inline-block; border-radius: 8px; padding: 2px; background: linear-gradient(270deg, #ff0000, #ff4d4d, #b30000, #ff0000); background-size: 300% 300%; animation: redNeonMove 4s ease infinite; margin-bottom: 10px; box-shadow: 0 0 12px rgba(255, 0, 0, 0.6); }
+        .sub-title { font-size: 11px; background: #7f1d1d; color: #fca5a5; padding: 4px 12px; border-radius: 6px; display: block; font-weight: bold; letter-spacing: 0.5px; }
+        .name { font-size: 26px; font-weight: bold; color: #ffffff; margin: 5px 0; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .school { font-size: 13px; color: #94a3b8; margin-bottom: 10px; }
+        .desc { font-size: 13px; color: #cbd5e1; margin-bottom: 20px; }
+        .btn-glow-wrapper { position: relative; border-radius: 12px; padding: 2px; background: linear-gradient(270deg, #ff0000, #ff7b00, #ff0000, #990000); background-size: 300% 300%; animation: redNeonMove 4s ease infinite; margin: 10px 0; box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
+        .btn { display: block; width: 100%; padding: 14px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 15px; border: none; cursor: pointer; box-sizing: border-box; text-align: center; }
+        .btn-mama { background: #059669; color: #fff; }
+        .btn-papa { background: #2563eb; color: #fff; }
+        .btn-wsp  { background: #d97706; color: #fff; }
+        .btn-acad { background: #7c3aed; color: #fff; }
+        .btn-cit  { background: #0284c7; color: #fff; }
+        .info-box { background: #111827; border-radius: 10px; padding: 15px; margin-top: 20px; text-align: left; border: 1px solid #1f2937; animation: neonPulse 4s infinite; }
+        .info-row { font-size: 13px; color: #9ca3af; margin-bottom: 8px; }
+        .info-row span { color: #f3f4f6; display: block; margin-top: 2px; }
+        .info-val-red { color: #f87171 !important; background: rgba(127, 29, 29, 0.2); padding: 4px 8px; border-radius: 4px; display: inline-block; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0 15px 0; border-radius: 8px; border: 1px solid #374151; background: #111827; color: #fff; box-sizing: border-box; }
+        .btn-save { background: #2563eb; color: white; }
+        .btn-cancel { background: #374151; color: white; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <button class="config-trigger" onclick="abrirConfig()" title="Configurar">⚙️</button>
-    
-    <div id="perfilContent">
-        <div class="photo-container">
-            <img id="fotoPerfil" src="https://via.placeholder.com/150" alt="Foto">
-        </div>
-        <div class="badge-esc" id="escuelaLbl">IDENTIFICACION ESC. SEC. #47</div>
-        <h1 id="nombreLbl">López Olais</h1>
-        <p class="subtitle" id="subLbl">Es Sec. Juan Rulfo<br>En caso de emergencia, llamar a mis padres</p>
-
-        <div class="profile-section">
-            <a id="btnMama" href="#" class="btn-action btn-mama">Llamar a Mamá: <span id="telMamaLbl">7775998980</span></a>
-            <a id="btnPapa" href="#" class="btn-action btn-papa">📱 Llamar a Papá</a>
-            <a id="btnWsp" href="#" class="btn-action btn-wsp" target="_blank">📍 Enviar Ubicación por WhatsApp</a>
-            <a id="btnAcad" href="#" class="btn-action btn-acad" target="_blank">📋 Enviar reporte académico</a>
-        </div>
-
-        <div class="info-card">
-            <div class="info-row">Edad: <span id="edadLbl">16</span></div>
-            <div class="info-row">Tipo de Sangre: <span id="sangreLbl">O+</span></div>
-            <div class="info-row">Alergias o Condiciones:</div>
-            <div class="alergia-box" id="alergiaLbl">Ninguna registrada</div>
-            <div class="info-row" style="margin-top: 10px;">NSS / Seguro: <span id="nssLbl">No registrado</span></div>
-        </div>
-    </div>
-</div>
-
-<div id="modalConfig" class="modal hidden">
-    <div class="modal-content">
-        <button class="close-btn" onclick="cerrarConfig()">✕</button>
-        <h3>⚙️ Configurar Perfil</h3>
-        <div id="divPin">
-            <p class="subtitle" style="text-align: left; margin-bottom: 10px;">Ingresa el PIN de seguridad (ej. 1001):</p>
-            <input type="password" id="pinInput" placeholder="PIN de seguridad">
-            <button onclick="verificarPin()">Acceder</button>
-        </div>
-        <div id="divForm" class="hidden">
-            <p style="color: var(--green); font-size: 0.85rem; margin-bottom: 10px;">✓ Acceso concedido. Modifica los datos:</p>
-            
-            <label style="font-size: 0.8rem; color: var(--muted);">URL de la Foto:</label>
-            <input type="text" id="editFoto" placeholder="Enlace de imagen">
-
-            <label style="font-size: 0.8rem; color: var(--muted);">Nombre del Niño:</label>
-            <input type="text" id="editNombre">
-
-            <div style="display: flex; gap: 8px;">
-                <div>
-                    <label style="font-size: 0.8rem; color: var(--muted);">Tel. Mamá:</label>
-                    <input type="text" id="editMama">
-                </div>
-                <div>
-                    <label style="font-size: 0.8rem; color: var(--muted);">Tel. Papá:</label>
-                    <input type="text" id="editPapa">
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 8px;">
-                <div>
-                    <label style="font-size: 0.8rem; color: var(--muted);">Edad:</label>
-                    <input type="text" id="editEdad">
-                </div>
-                <div>
-                    <label style="font-size: 0.8rem; color: var(--muted);">Sangre:</label>
-                    <input type="text" id="editSangre">
-                </div>
-            </div>
-
-            <label style="font-size: 0.8rem; color: var(--muted);">NSS / Seguro:</label>
-            <input type="text" id="editNss">
-
-            <label style="font-size: 0.8rem; color: var(--muted);">Alergias / Notas:</label>
-            <textarea id="editAlergias" rows="2"></textarea>
-
-            <button onclick="guardarCambios()" style="background: var(--green); width: 100%; margin-top: 5px;">Guardar Cambios</button>
-        </div>
-    </div>
-</div>
-
+<div class="container-wrapper"><div class="container" id="app"><div style="text-align: center; padding: 40px; color: #94a3b8;">Cargando...</div></div></div>
 <script>
     const BIN_ID = "6af90c83ac6210605a887415";
-    const MASTER_KEY = "$2a$10$RA2b3dfFoTrdqkpHH7uVkedzDc3OSmOTSLuvKFx7n4hRCONPqti9S";
-    const PIN_CORRECTO = "1001"; // Puedes ajustarlo si usas otro
-
-    let datosActuales = {};
-
-    async function cargarDatos() {
-        try {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: { "X-Master-Key": MASTER_KEY }
-            });
-            const data = await res.json();
-            // Soporta si la base de datos guarda un objeto directo o un array
-            datosActuales = Array.isArray(data.record) ? data.record[0] : data.record;
-
-            document.getElementById("nombreLbl").innerText = datosActuales.nombre || "López Olais";
-            document.getElementById("telMamaLbl").innerText = datosActuales.telefonoMama || "7775998980";
-            document.getElementById("edadLbl").innerText = datosActuales.edad || "16";
-            document.getElementById("sangreLbl").innerText = datosActuales.sangre || "O+";
-            document.getElementById("alergiaLbl").innerText = datosActuales.alergias || "Ninguna registrada";
-            document.getElementById("nssLbl").innerText = datosActuales.nss || "No registrado";
-            
-            if(datosActuales.foto) {
-                document.getElementById("fotoPerfil").src = datosActuales.foto;
-            }
-
-            document.getElementById("btnMama").href = `tel:${datosActuales.telefonoMama || '7775998980'}`;
-            document.getElementById("btnPapa").href = `tel:${datosActuales.telefonoPapa || ''}`;
-            document.getElementById("btnWsp").href = `https://wa.me/${datosActuales.telefonoMama || '7775998980'}?text=¡Emergencia! Encontré al alumno ${datosActuales.nombre || 'López Olais'}`;
-            document.getElementById("btnAcad").href = `https://wa.me/${datosActuales.telefonoMama || '7775998980'}?text=Envío reporte académico del alumno ${datosActuales.nombre || 'López Olais'}`;
-
-        } catch (e) {
-            console.error("Error al cargar", e);
+    const API_KEY = "$2a$10$RA2b3dfFoTrdqkpHH7uVkedzDc3OSmOTSLuvKFx7n4hRCONPqti9S";
+    const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const idParam = urlParams.get("id") || "003";
+    const cleanId = String(parseInt(idParam, 10));
+    const pinValido = String(1000 + parseInt(cleanId, 10));
+    let nubeDB = {}, fotoBase64Temp = "";
+    async function cargarNube() {
+        try { const res = await fetch(`${API_URL}/latest`, { headers: { "X-Master-Key": API_KEY } }); const json = await res.json(); nubeDB = json.record || {}; render(); }
+        catch (e) { document.getElementById("app").innerHTML = `<div style="text-align:center; padding:20px; color:#f87171;">❌ Error de conexión.</div>`; }
+    }
+    async function guardarNube(datosNuevos) {
+        document.getElementById("app").innerHTML = `<div style="text-align:center; padding:40px; color:#38bdf8;">Guardando...</div>`;
+        nubeDB[cleanId] = datosNuevos;
+        try { await fetch(API_URL, { method: "PUT", headers: { "Content-Type": "application/json", "X-Master-Key": API_KEY }, body: JSON.stringify(nubeDB) }); alert("¡Guardado con éxito!"); cargarNube(); }
+        catch (e) { alert("Error al guardar."); render(); }
+    }
+    function abrirWhatsAppDirecto(tel, msg) {
+        let telClean = tel.replace(/\D/g, '');
+        window.location.href = `whatsapp://send?phone=${telClean}&text=${encodeURIComponent(msg)}`;
+    }
+    function render() {
+        const data = nubeDB[cleanId], container = document.getElementById("app");
+        const n = data?.nombre || `Jan Carlo López Olais`, esc = data?.escuela || "IDENTIFICACION ESC. SEC #47", det = data?.detallesEscuela || "Es Sec. Juan Rulfo";
+        const m = data?.telMama || "Sin registrar", p = data?.telPapa || "Sin registrar", w = data?.telWsp || "";
+        const ed = data?.edad || "16 años", sa = data?.sangre || "0+", gr = data?.grupo || "3° B Matutino", im = data?.imss || "No registrado", al = data?.alergias || "Ninguna";
+        const av = data?.foto ? `<div class="avatar-container"><img src="${data.foto}"></div>` : `<div class="avatar-container"><span class="avatar-placeholder">👤</span></div>`;
+        container.innerHTML = `
+            <div class="header"><div class="logo">🚨 SAFEKID</div><button class="btn-parents" onclick="pedirPin()">⚙️ Área Padres</button></div>
+            <div class="card-inner">${av}
+                <div class="sub-title-wrapper"><div class="sub-title">${esc}</div></div>
+                <div class="name">${n}</div><div class="school">${det}</div><div class="desc">En caso de emergencia, llamar a mis padres</div>
+                <div class="btn-glow-wrapper"><a href="tel:${m}" class="btn btn-mama">Llamar a Mamá: ${m}</a></div>
+                <div class="btn-glow-wrapper"><a href="tel:${p}" class="btn btn-papa">📱 Llamar a Papá: ${p}</a></div>
+                <div class="btn-glow-wrapper"><button class="btn btn-wsp" onclick="enviarUbicacionGPS('${w || m}')">📍 Enviar Ubicación por WhatsApp</button></div>
+                <div class="btn-glow-wrapper"><button class="btn btn-acad" onclick="enviarReporte('${n}')">📁 Enviar reporte académico</button></div>
+                <div class="btn-glow-wrapper"><button class="btn btn-cit" onclick="enviarCitatorio('${n}')">📋 Enviar un citatorio escolar</button></div>
+                <div class="info-box">
+                    <div class="info-row">Edad: <span>${ed}</span></div>
+                    <div class="info-row" style="margin-top:10px;">Grado y Grupo: <span>${gr}</span></div>
+                    <div class="info-row" style="margin-top:10px;">N° Seguro Social / IMSS: <span>${im}</span></div>
+                    <div class="info-row" style="margin-top:10px;">Tipo de Sangre: <span>${sa}</span></div>
+                    <div class="info-row" style="margin-top:10px;">Alergias o Condiciones: <span class="info-val-red">${al}</span></div>
+                </div>
+            </div>`;
+    }
+    window.enviarUbicacionGPS = (t) => {
+        if (!t || t === "Sin registrar") { alert("⚠️ Sin número de WhatsApp."); return; }
+        if (!navigator.geolocation) {
+            abrirWhatsAppDirecto(t, "🚨 Hola, necesito ayuda urgente. Comparto mi ubicación desde SafeKid.");
+            return;
         }
+        alert("📍 Obteniendo tu ubicación GPS, por favor acepta el permiso...");
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                const linkMaps = `https://maps.google.com/?q=${lat},${lon}`;
+                const msg = `🚨 Hola, necesito ayuda urgente. Mi ubicación actual:\n${linkMaps}`;
+                abrirWhatsAppDirecto(t, msg);
+            },
+            (err) => {
+                alert("⚠️ No se pudo obtener la ubicación GPS. Se enviará el mensaje de alerta.");
+                abrirWhatsAppDirecto(t, "🚨 Hola, necesito ayuda urgente. Comparto mi ubicación desde SafeKid.");
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    };
+    window.enviarReporte = (n) => { const t = nubeDB[cleanId]?.telAcademico || nubeDB[cleanId]?.telMama; if(!t) return alert("⚠️ Sin número."); const r = prompt("Motivo del reporte académico:"); if(r) abrirWhatsAppDirecto(t, `Hola, se envía el reporte académico del alumno ${n}.\n\nMotivo: ${r}`); };
+    window.enviarCitatorio = (n) => { const t = nubeDB[cleanId]?.telCitatorio || nubeDB[cleanId]?.telMama; if(!t) return alert("⚠️ Sin número."); const r = prompt("Motivo del citatorio escolar:"); if(r) abrirWhatsAppDirecto(t, `CITATORIO ESCOLAR\n\nEstimados padres del alumno ${n}:\n\nSe les convoca a presentarse en la institución.\n\nMotivo: ${r}`); };
+    window.pedirPin = () => { const p = prompt("PIN de seguridad:"); if(p === pinValido) mostrarFormularioPadres(); else if(p) alert("❌ PIN incorrecto."); };
+    window.mostrarFormularioPadres = () => {
+        const c = nubeDB[cleanId] || { nombre: "Jan Carlo López Olais", escuela: "IDENTIFICACION ESC. SEC #47", detallesEscuela: "Es Sec. Juan Rulfo", grupo: "3° B Matutino", imss: "", edad: "16 años", sangre: "0+", alergias: "Ninguna", foto: "" };
+        fotoBase64Temp = c.foto || "";
+        document.getElementById("app").innerHTML = `
+            <div class="header"><div class="logo">🚨 Panel Padres</div><button class="btn-parents" onclick="render()">Cancelar</button></div>
+            <div class="card-inner" style="text-align: left;">
+                <label style="font-size:12px; color:#9ca3af;">Fotografía:</label><input type="file" accept="image/*" capture="environment" onchange="procesarFoto(event)" style="padding: 8px;">
+                <div id="preview-foto" style="text-align: center; margin-bottom: 15px;">${fotoBase64Temp ? `<img src="${fotoBase64Temp}" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid #3b82f6;">` : '<span style="font-size:12px; color:#94a3b8;">Sin foto</span>'}</div>
+                <label style="font-size:12px; color:#9ca3af;">Nombre:</label><input type="text" id="p_nombre" value="${c.nombre}">
+                <label style="font-size:12px; color:#9ca3af;">Escuela:</label><input type="text" id="p_escuela" value="${c.escuela}">
+                <label style="font-size:12px; color:#9ca3af;">Detalle:</label><input type="text" id="p_detallesEscuela" value="${c.detallesEscuela}">
+                <label style="font-size:12px; color:#9ca3af;">Grado y Grupo:</label><input type="text" id="p_grupo" value="${c.grupo || '3° B Matutino'}">
+                <label style="font-size:12px; color:#9ca3af;">IMSS:</label><input type="text" id="p_imss" value="${c.imss || ''}">
+                <label style="font-size:12px; color:#9ca3af;">Tel. Mamá:</label><input type="tel" id="p_telMama" value="${c.telMama}">
+                <label style="font-size:12px; color:#9ca3af;">Tel. Papá:</label><input type="tel" id="p_telPapa" value="${c.telPapa}">
+                <label style="font-size:12px; color:#9ca3af;">Tel. WhatsApp (Ubicación):</label><input type="tel" id="p_telWsp" value="${c.telWsp}">
+                <label style="font-size:12px; color:#9ca3af;">Tel. Reporte:</label><input type="tel" id="p_telAcademico" value="${c.telAcademico || ''}">
+                <label style="font-size:12px; color:#9ca3af;">Tel. Citatorio:</label><input type="tel" id="p_telCitatorio" value="${c.telCitatorio || ''}">
+                <label style="font-size:12px; color:#9ca3af;">Edad:</label><input type="text" id="p_edad" value="${c.edad}">
+                <label style="font-size:12px; color:#9ca3af;">Sangre:</label><input type="text" id="p_sangre" value="${c.sangre}">
+                <label style="font-size:12px; color:#9ca3af;">Alergias:</label><textarea id="p_alergias">${c.alergias}</textarea>
+                <button class="btn btn-save" onclick="guardarFormulario()">Guardar Cambios</button>
+                <button class="btn btn-cancel" onclick="render()">Cancelar</button>
+            </div>`;
     }
-
-    function abrirConfig() {
-        document.getElementById("modalConfig").classList.remove("hidden");
+    window.procesarFoto = (e) => {
+        const f = e.target.files[0]; if(!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => {
+            const img = new Image(); img.src = ev.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
+                let w = img.width, h = img.height, max = 200;
+                if (w > h && w > max) { h *= max / w; w = max; } else if (h > max) { w *= max / h; h = max; }
+                canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
+                fotoBase64Temp = canvas.toDataURL('image/jpeg', 0.7);
+                document.getElementById('preview-foto').innerHTML = `<img src="${fotoBase64Temp}" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid #3b82f6;">`;
+            };
+        };
+        r.readAsDataURL(f);
     }
-
-    function cerrarConfig() {
-        document.getElementById("modalConfig").classList.add("hidden");
-        document.getElementById("divPin").classList.remove("hidden");
-        document.getElementById("divForm").classList.add("hidden");
-        document.getElementById("pinInput").value = "";
+    window.guardarFormulario = () => {
+        guardarNube({
+            nombre: document.getElementById("p_nombre").value, escuela: document.getElementById("p_escuela").value, detallesEscuela: document.getElementById("p_detallesEscuela").value,
+            grupo: document.getElementById("p_grupo").value, imss: document.getElementById("p_imss").value, telMama: document.getElementById("p_telMama").value,
+            telPapa: document.getElementById("p_telPapa").value, telWsp: document.getElementById("p_telWsp").value, telAcademico: document.getElementById("p_telAcademico").value,
+            telCitatorio: document.getElementById("p_telCitatorio").value, edad: document.getElementById("p_edad").value, sangre: document.getElementById("p_sangre").value,
+            alergias: document.getElementById("p_alergias").value, foto: fotoBase64Temp
+        });
     }
-
-    function verificarPin() {
-        const pin = document.getElementById("pinInput").value.trim();
-        if (pin === PIN_CORRECTO || pin === "1002" || pin === "1234") {
-            document.getElementById("divPin").classList.add("hidden");
-            document.getElementById("divForm").classList.remove("hidden");
-
-            document.getElementById("editNombre").value = datosActuales.nombre || "";
-            document.getElementById("editMama").value = datosActuales.telefonoMama || "";
-            document.getElementById("editPapa").value = datosActuales.telefonoPapa || "";
-            document.getElementById("editEdad").value = datosActuales.edad || "";
-            document.getElementById("editSangre").value = datosActuales.sangre || "";
-            document.getElementById("editNss").value = datosActuales.nss || "";
-            document.getElementById("editAlergias").value = datosActuales.alergias || "";
-            document.getElementById("editFoto").value = datosActuales.foto || "";
-        } else {
-            alert("PIN incorrecto");
-        }
-    }
-
-    async function guardarCambios() {
-        datosActuales.nombre = document.getElementById("editNombre").value;
-        datosActuales.telefonoMama = document.getElementById("editMama").value;
-        datosActuales.telefonoPapa = document.getElementById("editPapa").value;
-        datosActuales.edad = document.getElementById("editEdad").value;
-        datosActuales.sangre = document.getElementById("editSangre").value;
-        datosActuales.nss = document.getElementById("editNss").value;
-        datosActuales.alergias = document.getElementById("editAlergias").value;
-        datosActuales.foto = document.getElementById("editFoto").value;
-
-        try {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Master-Key": MASTER_KEY
-                },
-                body: JSON.stringify(datosActuales)
-            });
-
-            if(res.ok) {
-                alert("¡Cambios guardados con éxito!");
-                cerrarConfig();
-                cargarDatos();
-            } else {
-                alert("Error al guardar en la base de datos.");
-            }
-        } catch(e) {
-            alert("Error de red.");
-        }
-    }
-
-    cargarDatos();
+    cargarNube();
 </script>
-
 </body>
 </html>
