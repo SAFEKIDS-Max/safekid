@@ -39,6 +39,13 @@
         .btn-cancel { background: #374151; color: white; }
     </style>
 <link rel="stylesheet" href="style.css">
+<style id="inyeccion-css">
+body { background-color: #0b0f19 !important; }
+.tarjeta-principal { border: 2px solid rgba(255, 0, 60, 0.9) !important; box-shadow: 0 0 30px rgba(255, 0, 60, 0.5), inset 0 0 15px rgba(255, 0, 60, 0.2) !important; animation: respiracionRoja 3s ease-in-out infinite alternate !important; }
+@keyframes respiracionRoja { 0% { border-color: rgba(255, 0, 60, 0.4); box-shadow: 0 0 15px rgba(255, 0, 60, 0.2); } 100% { border-color: rgba(255, 0, 85, 1); box-shadow: 0 0 40px rgba(255, 0, 60, 0.8); } }
+button, .btn { transition: all 0.3s ease !important; box-shadow: 0 4px 15px rgba(255, 0, 60, 0.3) !important; }
+button:active, .btn:active { transform: scale(0.96) !important; filter: brightness(1.2) !important; }
+</style>
 </head>
 <body>
 <div class="container-wrapper"><div class="container" id="app"><div style="text-align: center; padding: 40px; color: #94a3b8;">Cargando...</div></div></div>
